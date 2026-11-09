@@ -1,0 +1,15 @@
+# Python bytecode and cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual Environment
+venv/
+env/
+ENV/
+
+# Database files
+*.sqlite
+*.sqlite3
+*.db

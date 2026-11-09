@@ -1,0 +1,363 @@
+@baseUrl = http://localhost:8000
+@token = REEMPLAZA_CON_TU_BEARER_TOKEN
+@companyCode = AB
+
+### ==========================================
+### 1. HEALTH & SYSTEM
+### ==========================================
+
+GET {{baseUrl}}/health
+
+
+### ==========================================
+### 2. AUTHENTICATION
+### ==========================================
+
+# Login to get JWT Token
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin_central",
+  "password": "password123"
+}
+
+### Get Current Authenticated User Profile
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{token}}
+
+### Logout and Terminate Active Sessions
+POST {{baseUrl}}/auth/logout
+Authorization: Bearer {{token}}
+
+
+### ==========================================
+### 3. ADMIN - COMPANY & SETUP
+### ==========================================
+
+### Setup Company
+POST {{baseUrl}}/admin/setup/company
+Content-Type: application/json
+
+{
+  "name": "Clinica Central",
+  "short_code": "CC"
+}
+
+### Register Company and Initial Admin
+POST {{baseUrl}}/admin/register
+Content-Type: application/json
+
+{
+  "company_name": "Hospital Metropolitano",
+  "admin_username": "superadmin",
+  "admin_password": "securepassword123"
+}
+
+### List All Companies
+GET {{baseUrl}}/admin/companies
+Authorization: Bearer {{token}}
+
+
+### ==========================================
+### 4. ADMIN - USERS & STAFF MANAGEMENT
+### ==========================================
+
+### Create Staff Operator User
+POST {{baseUrl}}/admin/users
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "username": "operator1",
+  "fullname": "Juan Perez",
+  "password": "password123",
+  "role": "operator",
+  "area_id": 1
+}
+
+### List Company Users (with optional filters)
+GET {{baseUrl}}/admin/users?limit=10&offset=0
+Authorization: Bearer {{token}}
+
+### Update Staff User Details
+PUT {{baseUrl}}/admin/users/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "fullname": "Juan Carlos Perez",
+  "area_id": 1
+}
+
+### Update Staff User Password
+PUT {{baseUrl}}/admin/users/1/password
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "password": "newsecurepassword123"
+}
+
+### Disconnect Staff User Forcefully
+POST {{baseUrl}}/admin/users/1/disconnect
+Authorization: Bearer {{token}}
+
+### Soft Delete Staff User
+DELETE {{baseUrl}}/admin/users/1
+Authorization: Bearer {{token}}
+
+### Update Admin Profile
+PUT {{baseUrl}}/admin/profile
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "username": "superadmin_updated",
+  "new_password": "newpassword123"
+}
+
+
+### ==========================================
+### 5. ADMIN - AREAS & STATIONS
+### ==========================================
+
+### Create Service Area
+POST {{baseUrl}}/admin/areas
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "General Medicine",
+  "short_code": "GM"
+}
+
+### List Areas
+GET {{baseUrl}}/admin/areas
+Authorization: Bearer {{token}}
+
+### Update Service Area
+PUT {{baseUrl}}/admin/areas/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Advanced Medicine",
+  "short_code": "AM"
+}
+
+### Delete Service Area
+DELETE {{baseUrl}}/admin/areas/1
+Authorization: Bearer {{token}}
+
+### Create Station
+POST {{baseUrl}}/admin/stations
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "area_id": 1,
+  "name": "Caja 1"
+}
+
+### List Stations
+GET {{baseUrl}}/admin/stations?limit=10&offset=0
+Authorization: Bearer {{token}}
+
+### Update Station
+PUT {{baseUrl}}/admin/stations/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Caja Principal 1",
+  "area_id": 1,
+  "is_active": true
+}
+
+### Delete Station
+DELETE {{baseUrl}}/admin/stations/1
+Authorization: Bearer {{token}}
+
+
+### ==========================================
+### 6. ADMIN - SHIFTS MANAGEMENT
+### ==========================================
+
+### Get Active Shift Status
+GET {{baseUrl}}/admin/shifts/active
+Authorization: Bearer {{token}}
+
+### Open Shift
+POST {{baseUrl}}/admin/shifts/open
+Authorization: Bearer {{token}}
+
+### Close Active Shift
+POST {{baseUrl}}/admin/shifts/close
+Authorization: Bearer {{token}}
+
+
+### ==========================================
+### 7. ADMIN - DISPLAYS & KIOSKS (TV/KIOSK)
+### ==========================================
+
+### List Display Screens
+GET {{baseUrl}}/admin/displays?limit=10&offset=0
+Authorization: Bearer {{token}}
+
+### Create Display Screen or Kiosk
+POST {{baseUrl}}/admin/displays
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Sala de Espera TV 1",
+  "type": "tv"
+}
+
+### Update Display Screen
+PUT {{baseUrl}}/admin/displays/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Sala Principal TV",
+  "type": "tv"
+}
+
+### Toggle Display Screen Status
+PUT {{baseUrl}}/admin/displays/1/toggle
+Authorization: Bearer {{token}}
+
+### Regenerate Display Pairing Code
+POST {{baseUrl}}/admin/displays/1/regenerate-code
+Authorization: Bearer {{token}}
+
+### Force Disconnect Display
+POST {{baseUrl}}/admin/displays/1/disconnect
+Authorization: Bearer {{token}}
+
+### Delete Display Screen
+DELETE {{baseUrl}}/admin/displays/1
+Authorization: Bearer {{token}}
+
+
+### ==========================================
+### 8. ADMIN - METRICS, AUDIT & REPORTS
+### ==========================================
+
+### Get Metrics Summary
+GET {{baseUrl}}/admin/metrics
+Authorization: Bearer {{token}}
+
+### Get Audit Logs Trail
+GET {{baseUrl}}/admin/audit?limit=50&offset=0
+Authorization: Bearer {{token}}
+
+### Export Audit Logs as CSV
+GET {{baseUrl}}/admin/audit/export-csv
+Authorization: Bearer {{token}}
+
+### Get Tickets History
+GET {{baseUrl}}/admin/tickets/history?limit=50&offset=0
+Authorization: Bearer {{token}}
+
+### Export Tickets History as CSV
+GET {{baseUrl}}/admin/tickets/export-csv
+Authorization: Bearer {{token}}
+
+
+### ==========================================
+### 9. PUBLIC KIOSK & DISPLAYS (NO AUTH)
+### ==========================================
+
+### Get Areas for Public Kiosk by Company Code
+GET {{baseUrl}}/tickets/kiosk/{{companyCode}}/areas
+
+### Create Ticket from Kiosk
+POST {{baseUrl}}/tickets/kiosk/{{companyCode}}/create
+Content-Type: application/json
+
+{
+  "area_id": 1
+}
+
+### Get Display Board (Serving & Waiting)
+GET {{baseUrl}}/tickets/display/{{companyCode}}/board
+
+### Get Recent Called Tickets for TV Display
+GET {{baseUrl}}/tickets/display/{{companyCode}}/called?limit=6
+
+### Verify Device Pairing Code
+POST {{baseUrl}}/tickets/display/verify-pairing
+Content-Type: application/json
+
+{
+  "company_code": "{{companyCode}}",
+  "pairing_code": "123456",
+  "device_type": "tv"
+}
+
+
+### ==========================================
+### 10. OPERATOR WORKFLOW
+### ==========================================
+
+### Get Available Stations for Current Operator
+GET {{operator}/available-stations
+Authorization: Bearer {{token}}
+
+### Create Station Working Session for Operator
+POST {{operator}/tickets/create_session_station
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "station_id": 1
+}
+
+### Call Next Ticket By Station
+POST {{operator}/call_next_ticket_by_station
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "station_id": 1
+}
+
+### Get Active Shift for Device by Company Code
+GET {{operator}/shifts/active?company_code={{companyCode}}
+
+### Get Operator Active Ticket in Progress
+GET {{baseUrl}}/tickets/operator/active
+Authorization: Bearer {{token}}
+
+### Get Waiting Tickets Queue
+GET {{baseUrl}}/tickets/operator/waiting
+Authorization: Bearer {{token}}
+
+### Call Next Ticket (General Queue or Specific Area)
+POST {{baseUrl}}/tickets/operator/call-next?area_id=1
+Authorization: Bearer {{token}}
+
+### Complete Ticket In Progress
+POST {{baseUrl}}/tickets/operator/1/complete
+Authorization: Bearer {{token}}
+
+### Derive Ticket to Another Area
+POST {{baseUrl}}/tickets/operator/1/derive
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "target_area_id": 2
+}
+
+### Return Ticket Back to Queue
+POST {{baseUrl}}/tickets/operator/1/return
+Authorization: Bearer {{token}}
+
+### Cancel Active Ticket
+POST {{baseUrl}}/tickets/operator/1/cancel
+Authorization: Bearer {{token}}
